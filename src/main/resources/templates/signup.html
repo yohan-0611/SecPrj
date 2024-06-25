@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원가입페이지</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 카카오 JavaScript SDK 로딩 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    
+     <style>
+        /* 추가적인 스타일링 */
+        .container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .navbar-brand {
+            font-weight: bold; /* Make the font bold */
+            
+        }
+    </style>
+</head>
+<body>
+   <div class="container px-5">
+            <a class="navbar-brand" th:href="@{/index}">Today Organized Plan(TOP)</a>
+            <div class="navbar-collapse justify-content-end">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">회원가입</h4>
+                <!-- 회원가입 폼 -->
+                <form action="/signup" method="post">
+                    <div class="form-group">
+                        <label for="username">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">회원가입</button>
+                </form>
+                <!-- 에러 메시지 표시 -->
+                <div class="error-message">
+                    <span th:if="${errorMessage}" th:text="${errorMessage}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

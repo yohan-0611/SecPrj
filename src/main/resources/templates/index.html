@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>우리 고?조</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<!-- Bootstrap icons-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles.css" rel="stylesheet" />
+</head>
+<body class="d-flex flex-column h-100">
+
+   <style>
+        body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: #f5f5f5; /* 기본 배경색을 흰색으로 설정 */
+    color: #333; /* 기본 텍스트 색상을 블랙으로 설정 */
+}
+
+.dark-mode {
+    background-color: #121212; /* 다크 모드 배경색 */
+    color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.dark-mode .navbar, .dark-mode .custom-container, .dark-mode .bg-light {
+    background-color: #343a40; /* 다크 모드 네비바 배경색 */
+    color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.dark-mode .nav-link, .dark-mode .link-dark, .dark-mode .link-light {
+    color: #e0e0e0; /* 다크 모드 링크 색상 */
+}
+
+.dark-mode .nav-link:hover, .dark-mode .link-dark:hover, .dark-mode .link-light:hover {
+    color: #5bc0de; /* 다크 모드에서 링크 호버 색상 */
+}
+
+.btn-dark-mode {
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-dark-mode:hover {
+    background-color: #23272b;
+    color: #b3e0f2;
+}
+
+.dark-mode-toggle {
+    margin-left: auto;
+}
+
+        .navbar-toggler {
+            order: 2; /* 네브바 토글 버튼 순서 변경 */
+        }
+
+        .navbar-nav {
+            order: 1; /* 네브바 메뉴 순서 변경 */
+        }
+
+        .nav-item {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: #fff; /* 네브바 글씨 색상을 흰색으로 설정 */
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1rem; /* 글씨 크기 키움 */
+            color: white; /* 기본 글씨 색상 검정색 */
+            transition: color 0.3s ease; /* 색상 전환 부드럽게 */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: black; /* 호버 시 진한 파란색 */
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .rounded-border {
+            border: 4px solid black; /* 굵은 검은색 선을 추가 */
+            border-radius: 15px; /* 모서리를 둥글게 */
+            padding: 5px; /* 내부 여백 추가 */
+        }
+
+        .input-group .form-control {
+            border: 50; /* 입력 필드의 기본 테두리 제거 */
+            outline: 100; /* 입력 필드 포커스 테두리 제거 */
+        }
+
+        .input-group .btn {
+            border-radius: 0 10px 10px 0; /* 버튼의 오른쪽 모서리 둥글게 */
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+
+        #advertisementContainer {
+            position: absolute; /* 부모 요소를 기준으로 위치를 조정하기 위해 사용 */
+            width: 100%; /* 부모 요소의 너비를 100%로 설정 */
+            height: 100vh; /* 부모 요소의 높이를 전체 화면 높이로 설정 */
+        }
+
+        #advertisementCarousel {
+            position: absolute; /* 부모 요소를 기준으로 위치를 조정 */
+            top: 45%; /* 원하는 위치로 조정 */
+            right: 0; /* 오른쪽 끝으로 붙임 */
+            width: 400px; /* 너비 조정 */
+            max-height: 40vh; /* 최대 높이 조정 */
+            border: 1px solid #ddd; /* 테두리 설정 */
+            background-color: white; /* 배경 색상 설정 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
+        }
+
+        .carousel-inner img {
+            max-height: 30vh; /* 이미지의 최대 높이 조정 */
+            width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .carousel-caption {
+            bottom: 0;
+        }
+        
+        
+        .btn-custom {
+            background-color: #007bff; /* Blue color */
+            color: white; /* White text color */
+        }
+        
+        .custom-container {
+            background-color: #b3e0f2; /* Light sky blue color */
+        }
+        
+        .navbar-brand {
+            font-weight: bold; /* Make the font bold */
+        }
+    </style>
+
+    <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark');
+        }
+
+        function openModal(element) {
+            const title = element.getAttribute('data-title');
+            const content = element.getAttribute('data-content');
+            const imageUrl = element.getAttribute('data-image-url');
+            const destination = element.getAttribute('data-destination');
+
+            document.getElementById('modalDescription').innerText = title;
+            document.getElementById('modalContent').innerText = content;
+            if (imageUrl) {
+                document.getElementById('modalImage').src = imageUrl;
+                document.getElementById('modalImage').style.display = 'block';
+            } else {
+                document.getElementById('modalImage').style.display = 'none';
+            }
+
+            const leftButton = document.getElementById('leftButton');
+            leftButton.href = `/sample/${destination}`;
+        }
+    </script>
+    
+     <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+        }
+    </script>
+
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-5">
+            <a class="navbar-brand" th:href="@{/index}">Today Organized Plan (TOP)</a>
+            <div class="navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <button type="button" class="btn btn-primary me-2" onclick="location.href='/login'" id="login_btn">로그인</button>
+                    </li>	
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="btn btn-primary me-2" id="logout_btn">로그아웃</button>
+                        </form>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <button type="button" class="btn btn-secondary me-2" onclick="location.href='/signup'">회원가입</button>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <span th:text="${#authentication.name} + '님 환영합니다'"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="modalContainer"></div>
+    <!-- 네비바 end -->
+   
+   	<nav class="navbar navbar-expand-lg custom-container">
+    <div class="container px-5">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <!-- 가운데 정렬된 리스트 -->
+            <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index">Home</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index#contentContainer">계획짜기</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="http://localhost/board">게시판</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="mypage">MyPage</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="faq.html">FAQ</a>
+                </li>
+            </ul>
+        </div>
+        <button onclick="toggleDarkMode()" class="btn btn-dark-mode dark-mode-toggle">Dark Mode</button>
+    </div>
+</nav>
+
+   <!-- 네비바 end -->
+
+   <!-- 메인 start -->
+   <main class="flex-shrink-0">
+
+      <!-- 헤더 start-->
+      <header class="bg-info py-5">
+         <div class="container px-5">
+            <div class="row gx-5 align-items-center justify-content-center">
+               <div class="col-lg-8 col-xl-7 col-xxl-6">
+                  <div class="my-5 text-center text-xl-start">
+                     <h1 class="display-5 fw-bolder text-white mb-2"
+                        style="font-size: 47px;">계획 J도, 즉흥 P도 떠나고 싶은 마음만 있다면 떠나요!</h1>
+                     <p class="lead fw-normal text-white-50 mb-4">학업에 치이고, 업무에
+                        치이고, 사람에 치여 어디든 갑자기 떠나고 싶은날, 계획을 짜야 출발하는 J분들, 계획 없이 일단 출발하자는 P분들
+                        모두 간단하고 편리하게 여행 계획 짜서 출발하세요!</p>
+                     <div
+                        class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                        <a class="btn btn-primary btn-lg px-4 me-sm-3"
+                           href="#contentContainer">계획 짜기!!</a> <a
+                           class="btn btn-outline-light btn-lg px-4"
+                           href="http://localhost/board">게시판</a>
+                     </div>
+                     
+                  </div>
+               </div>
+               <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center">
+                  <img class="img-fluid rounded-3 my-5"
+                     src="https://flexible.img.hani.co.kr/flexible/normal/700/466/imgdb/original/2021/0603/20210603504045.jpg"
+                     alt="..." />
+               </div>
+            </div>
+         </div>
+      </header>
+      <!-- 헤더 end -->
+      <section class="py-5" id="contentContainer">
+         <div class="container px-4 my-4">
+            <div class="row gx-5 justify-content-center mb-4">
+               <div class="col-lg-6 text-center">
+                  <h2 class="fw-bolder">어디로 가야하오</h2>
+               </div>
+            </div>
+            <div class="row gx-5 justify-content-center">
+               <div class="col-lg-8 col-xl-6">
+                  <div class="input-group" sytle="position: relative;">
+                     <input type="text" class="form-control" id="searchInput"
+                        placeholder="검색어를 입력하세요..." onkeypress="handleSearch(event)">
+                     <a class="btn btn-primary" type="button"
+                        onclick="filterContent()" href="#contentContainer">검색</a>
+                  </div>
+               </div>
+            </div>
+
+            <br> <br>
+
+
+
+
+            <!-- 1 row -->
+            <div class="row gx-5">
+               <div class="col-lg-4 mb-5" data-keywords="경주,gyungju">
+                  <div class="card h-90 shadow border-0" data-destination="gyeongju">
+                     <div class="data-title">경주에 대한 설명</div>
+                     <div class="data-content">경주는 대한민국의 역사와 문화가 고스란히 남아 있는
+                        도시입니다. 이곳은 세계 유산으로 등재된 석굴암과 불국사를 비롯한 다채로운 문화유산이 풍부하며, 특히 한국의
+                        전통적인 음식인 경주 특색 요리들은 그 맛과 향이 독특합니다. 여행자들은 역사와 문화를 만끽하며 지역 특산물을
+                        맛보며 경주를 탐방합니다.</div>
+                     <img class="card-img-top" src="/images/gyungju.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="경주" data-content="경주에 대한 설명" data-image-url="/images/gyungju.jpg" data-destination="gyeongju" onclick="openModal(this)"><h5 class="card-title mb-3">GYEONGJU</h5></a>
+                        <p class="card-text mb-0">대한민국 경주</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="제주,jeju">
+                  <div class="card h-90 shadow border-0" data-destination="jeju">
+                     <div class="data-title">제주도에 대한 설명</div>
+                     <div class="data-content">제주도는 풍부한 자연경관과 다채로운 문화로 유명하며, 특히
+                        제주 흑돼지와 함께하는 맛있는 음식 천국으로서 먹거리로 유명합니다. 또한 UNESCO 세계유산으로 지정된
+                        성산일출봉이나 성읍민속마을과 같은 문화유산이 풍부하게 있어 관광객들에게 다양한 경험을 제공합니다.</div>
+                     <img class="card-img-top" src="/images/jeju.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="제주" data-content="제주도에 대한 설명" data-image-url="/images/jeju.jpg" data-destination="jeju" onclick="openModal(this)"><h5 class="card-title mb-3">JEJU</h5></a>
+                        <p class="card-text mb-0">대한민국 제주도</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="여수,yeosu">
+                  <div class="card h-90 shadow border-0" data-destination="yeosu">
+                     <div class="data-title">여수에 대한 설명</div>
+                     <div class="data-content">여수는 해상 관광과 맛있는 해산물로 유명하며, 특히 여수
+                        바다의 맑은 물에서 잡힌 신선한 해산물은 지역의 대표적인 먹거리입니다. 또한, 여수 해상공원과 여수 밤바다 축제 등
+                        다양한 문화행사가 열리며, 여수 남쪽선착장과 여수 동백꽃 축제는 그중에서도 유명한 관광 요소입니다.</div>
+                     <img class="card-img-top" src="/images/yeosu.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="여수" data-content="여수에 대한 설명" data-image-url="/images/yeosu.jpg" data-destination="yeosu" onclick="openModal(this)"><h5 class="card-title mb-3">YEOSU</h5></a>
+                        <p class="card-text mb-0">대한민국 여수</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- 1 row 끝 -->
+
+               <!-- 2 row -->
+               <div class="col-lg-4 mb-5" data-keywords="부산,busan">
+                  <div class="card h-90 shadow border-0" data-destination="busan">
+                     <div class="data-title">부산에 대한 설명</div>
+                     <div class="data-content">부산은 바다가 어우러진 도시로, 신선한 해산물과 다양한
+                        해안가 음식 그리고 돼지국밥으로 유명합니다. 특히 광안리 해변과 해운대 해수욕장은 관광객들에게 인기가 많으며, 부산
+                        타워와 범어사는 지역의 대표적인 관광지입니다.</div>
+                     <img class="card-img-top" src="/images/busan.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="부산" data-content="부산에 대한 설명" data-image-url="/images/busan.jpg" data-destination="busan" onclick="openModal(this)"><h5 class="card-title mb-3">BUSAN</h5></a>
+                        <p class="card-text mb-0">대한민국 부산</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="전주,jeonju">
+                  <div class="card h-90 shadow border-0" data-destination="jeonju">
+                     <div class="data-title">전주에 대한 설명</div>
+                     <div class="data-content">전주는 전통적인 한국 음식으로 유명한 곳으로, 전주
+                        한옥마을에서는 한국 전통 가옥을 볼 수 있으며, 막걸리 골목과 한옥마을에서는 다채로운 전통 음식을 맛볼 수
+                        있습니다. 또한, 전주에는 전주향교와 오목대 등 다양한 문화유산이 있어 관광객들에게 인기가 있습니다.</div>
+                     <img class="card-img-top" src="/images/jeonju.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="전주" data-content="전주에 대한 설명" data-image-url="/images/jeonju.jpg" data-destination="jeonju" onclick="openModal(this)"><h5 class="card-title mb-3">JEONJU</h5></a>
+                        <p class="card-text mb-0">대한민국 전주</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="서울,seoul">
+                  <div class="card h-90 shadow border-0" data-destination="seoul">
+                     <div class="data-title">서울에 대한 설명</div>
+                     <div class="data-content">서울은 한국의 수도로서, 과거와 현재가 공존하는 도시입니다.
+                        궁궐과 종교적인 유산인 경복궁과 종묘를 비롯하여 현대적인 건축물과 문화공간이 함께 어우러져 있습니다. 또한,
+                        한류문화를 체험할 수 있는 장소와 전통 음식을 맛볼 수 있는 다양한 먹거리가 특징입니다.</div>
+                     <img class="card-img-top" src="/images/seoul.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="서울" data-content="서울에 대한 설명" data-image-url="/images/seoul.jpg" data-destination="seoul" onclick="openModal(this)"><h5 class="card-title mb-3">SEOUL</h5></a>
+                        <p class="card-text mb-0">대한민국 서울</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- 2 row 끝 -->
+
+               <!-- 3 row -->
+               <div class="col-lg-4 mb-5" data-keywords="강릉,kangreung">
+                  <div class="card h-90 shadow border-0" data-destination="kangreung">
+                     <div class="data-title">강릉에 대한 설명</div>
+                     <div class="data-content">강릉은 자연 경관이 아름다운 도시로, 오대산과 속초해변 등
+                        풍부한 관광지가 있습니다. 특히, 동화 속 성과 같은 느낌을 주는 경포대와 유명한 송정해수욕장이 인기 있습니다.
+                        또한, 맛있는 초당 순두부와 닭강정 등 다양한 먹거리를 즐길 수 있습니다.</div>
+                     <img class="card-img-top" src="/images/kangreung.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="강릉" data-content="강릉에 대한 설명" data-image-url="/images/kangreung.jpg" data-destination="kangreung" onclick="openModal(this)"><h5 class="card-title mb-3">KANGREUNG</h5></a>
+                        <p class="card-text mb-0">대한민국 강릉</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="수원,suwon">
+                  <div class="card h-90 shadow border-0" data-destination="suwon">
+                     <div class="data-title">수원에 대한 설명</div>
+                     <div class="data-content">수원은 화려한 경관과 역사적인 유산으로 유명한 도시입니다.
+                        수원화성은 조선시대의 궁궐과 왕실 생활을 엿볼 수 있는 곳으로, UNESCO 세계문화유산으로 등재되었습니다. 또한,
+                        한국의 전통문화를 체험할 수 있는 경기전과 함께 수원왕갈비와 수원역 근처의 "수원 맛집 거리"에서 다양한 먹거리를
+                        맛볼 수 있습니다.</div>
+                     <img class="card-img-top" src="/images/suwon.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="수원" data-content="수원에 대한 설명" data-image-url="/images/suwon.jpg" data-destination="suwon" onclick="openModal(this)"><h5 class="card-title mb-3">SUWON</h5></a>
+                        <p class="card-text mb-0">대한민국 수원</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 mb-5" data-keywords="인천,incheon">
+                  <div class="card h-90 shadow border-0" data-destination="incheon">
+                     <div class="data-title">인천에 대한 설명</div>
+                     <div class="data-content">인천은 역사적인 유산과 현대적인 매력을 결합한 도시입니다.
+                        중구의 중구차이나타운에서는 다양한 중식 요리를 맛볼 수 있으며, 인천 대교와 송도 해수욕장은 아름다운 경치를
+                        자랑합니다. 또한, 자연과 문화가 공존하는 월미도, 을왕리 등 다양한 관광 명소가 있습니다.</div>
+                     <img class="card-img-top" src="/images/incheon.jpg" alt="..." />
+                     <div class="card-body p-4">
+                        <a class="text-decoration-none link-dark stretched-link"
+                           href="#!" data-bs-toggle="modal" data-bs-target="#locationModal" data-title="인천" data-content="인천에 대한 설명" data-image-url="/images/incheon.jpg" data-destination="incheon" onclick="openModal(this)"><h5 class="card-title mb-3">INCHEON</h5></a>
+                        <p class="card-text mb-0">대한민국 인천</p>
+                     </div>
+                     <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                        <div class="d-flex align-items-end justify-content-between">
+                           <div class="d-flex align-items-center"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            </section>
+            <!-- 3 row 끝 -->
+
+
+<!-- 유혹 start -->
+<section class="py-4 bg-light" id="features">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <h2 class="fw-bolder mb-0">
+                    여행을 시작하기<br>가장 좋은 날
+                </h2>
+            </div>
+            <div class="col-lg-8">
+                <div class="row gx-5 row-cols-1 row-cols-md-2">
+                    <div class="col mb-5 h-100">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <h2 class="h5">Time</h2>
+                        <p class="mb-0">여행하는 시간은 자유와 탐험의 순간입니다. 여행은 우리를 세상의 끝으로
+                            이끌고, 그 곳에서 새로운 가능성을 발견하게 합니다.</p>
+                    </div>
+                    <div class="col mb-5 h-100">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+                            <i class="bi bi-cloud"></i>
+                        </div>
+                        <h2 class="h5">Weather</h2>
+                        <p class="mb-0">햇살이 부드럽게 피부를 감싸고, 바람이 우아하게 머리칼을 스치면 우리의
+                            마음은 자유로워집니다. 여행하는 날씨는 모든 감각을 깨우는 순간입니다.</p>
+                    </div>
+                    <div class="col mb-5 mb-md-0 h-100">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <h2 class="h5">Afford</h2>
+                        <p class="mb-0">돈은 여행의 제한자가 아니라, 그 자체로 여행의 한 부분입니다. 우리는
+                            여유를 바탕으로 새로운 경험을 통해 성장할 수 있는 기회를 만날 수 있습니다.</p>
+                    </div>
+                    <div class="col h-100">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+                            <i class="bi bi-emoji-sunglasses-fill"></i>
+                        </div>
+                        <h2 class="h5">Feelings</h2>
+                        <p class="mb-0">여행하는 기분은 마치 책 속의 페이지를 넘기는 것과 같습니다. 한 장 한 장
+                            넘겨가면서, 우리는 끝없는 이야기와 경험을 만나게 됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 유혹 end -->
+
+<!-- 명언 start -->
+<div class="py-4">
+    <div class="container px-5 my-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-10 col-xl-7">
+                <div class="text-center">
+                    <div class="fs-3 mb-3 fst-italic">
+                        " 세계는 한 권의 책이다.<br> 여행하지 않는 사람들은 그 책의 한 페이지만<br> 읽는
+                        것과 같다. "
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <img class="rounded-circle me-3"
+                            src="https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F015%2F2017%2F09%2F25%2F0003828068_002_20170925090340400.jpg&type=a340"
+                            alt="..." width="100">
+                        <div class="fw-bold">
+                            <h4>-아우구스티누스-</h4>
+                            <br> 고대문화 최후의 위인
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 명언 end -->
+
+<!-- 검색창 및 지역 소개 start -->
+<script>
+    function filterContent() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('#contentContainer .col-lg-4');
+
+        cards.forEach(card => {
+            const keywords = card.getAttribute('data-keywords').toLowerCase().split(' ');
+            const title = card.querySelector('.data-title').textContent.toLowerCase();
+            const content = card.querySelector('.data-content').textContent.toLowerCase();
+
+            // 검색어가 카드의 키워드 또는 제목 또는 내용에 포함되어 있는지 확인
+            if (keywords.some(keyword => keyword.includes(searchInput)) || title.includes(searchInput) ) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+
+    function handleSearch(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            filterContent();
+        }
+    }
+</script>
+
+<!-- 마지막 유혹 start -->
+<aside class="bg-info bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+    <div class="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+        <div class="mb-4 mb-xl-0">
+            <div class="fs-3 fw-bold text-white">언제든, 어디서든 떠날 준비 완료</div>
+            <div class="text-white-50">일정계획이 고되거나 힘들때 언제 어디서든 편하게 계획
+                정해서 떠나요!!!</div>
+        </div>
+    </div>
+</aside>
+<!-- 마지막 유혹 end -->
+
+</div>
+</section>
+<!-- 검색창 및 지역 소개 end -->
+
+</main>
+<!-- 메인 end -->
+
+<!-- 푸터 start -->
+<footer class="bg-dark py-4 mt-auto">
+    <div class="container px-5">
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div class="col-auto">
+                <div class="small m-0 text-white">Copyright &copy; Your
+                    Website 2023</div>
+            </div>
+            <div class="col-auto">
+                <a class="link-light small" href="#!">Privacy</a> <span
+                    class="text-white mx-1">&middot;</span> <a
+                    class="link-light small" href="#!">Terms</a> <span
+                    class="text-white mx-1">&middot;</span> <a
+                    class="link-light small" href="#!">Contact</a>
+            </div>
+            0
+        </div>
+    </div>
+
+</footer>
+<!-- 푸터 end -->
+
+<!-- 모달 start -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered custom-modal-position">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title" id="locationModalLabel">지역<br></h2>
+                    <p id="modalDescription">대한민국 어디</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='index'"></button>
+            </div>
+            <div class="modal-body">
+                <div class="description">
+                    <h4 id="modalData">설명</h4>
+                    <p id="modalContent">내용</p>
+                    <div class="ms-auto">
+                        <a href="#" id="leftButton" class="btn btn-primary"><i class="bi bi-calendar-plus"></i> 일정 만들기 </a>
+                    </div>
+                </div>
+                <img id="modalImage" src="" alt="Location Image" class="img-fluid mb-3">
+            </div>
+            <div class="modal-footer">
+                <div class="me-4">
+                    <a href="https://kr.trip.com/?locale=ko-KR&curr=KRW" id="rightButton" class="btn btn-primary"> 숙소 예약하기 </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 모달 end -->
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+
+</body>
+</html>

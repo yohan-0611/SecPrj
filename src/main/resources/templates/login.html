@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인페이지</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* 추가적인 스타일링 */
+        .container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .navbar-brand {
+            font-weight: bold; /* Make the font bold */
+            
+        }
+        .nav-link {
+        color: #fff; /* 네브바 글씨 색상을 흰색으로 설정 */
+    }
+    </style>
+</head>
+<body>
+
+    
+    
+    <div class="container px-5">
+            <a class="navbar-brand" th:href="@{/index}">Today Organized Plan(TOP)</a>
+            <div class="navbar-collapse justify-content-end">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">로그인</h4>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                    <button id="kakao-login-btn" class="btn btn-warning btn-block mt-2">카카오로 로그인</button>
+                    <!-- <button id="google-login-btn" class="btn btn-danger btn-block">구글로 로그인</button> -->
+                    <button id="logout-btn" class="btn btn-secondary btn-block" style="display: none;">로그아웃</button>
+                </form>
+                <!-- 에러 메시지 표시 -->
+                <div class="error-message">
+                    <span th:if="${errorMessage}" th:text="${errorMessage}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+ 
+
+        Kakao.init('882e2a60814c852b5c3a4c27cfa493fe');
+
+        document.getElementById('kakao-login-btn').addEventListener('click', function() {
+            Kakao.Auth.login({
+                success: function(authObj) {
+                    console.log(authObj);
+                    alert("카카오 로그인 성공!");
+                    toggleLoginButton();
+                    window.location.href = "/index";
+                },
+                fail: function(err) {
+                    console.error(err);
+                    alert("카카오 로그인 실패: " + err.error_description);
+                }
+            });
+        });
+
+        // 구글 로그인 버튼 클릭 이벤트 추가
+        document.getElementById('google-login-btn').addEventListener('click', function() {
+            // 구글 로그인 로직 추가 필요
+            alert("구글 로그인 기능 구현 필요");
+        });
+
+        // 로그인 버튼 토글 함수
+        function toggleLoginButton() {
+            var loginButton = document.getElementById("loginButton");
+            var logoutButton = document.getElementById("logout-btn");
+            if (loginButton && logoutButton) {
+                loginButton.style.display = "none";
+                logoutButton.style.display = "block";
+            }
+        }
+        
+        
+    </script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

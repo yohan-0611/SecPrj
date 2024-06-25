@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Board List</title>
+<link href="/css/styles.css" rel="stylesheet" />
+<style>
+body {
+	transition: background-color 0.3s ease, color 0.3s ease;
+	background-color: #f5f5f5; /* 기본 배경색을 얕은 회색으로 설정 */
+	color: #333; /* 기본 텍스트 색상을 블랙으로 설정 */
+}
+
+.dark-mode {
+	background-color: #121212; /* 다크 모드 배경색 */
+	color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.dark-mode .navbar, .dark-mode .custom-container, .dark-mode .bg-light {
+	background-color: #343a40; /* 다크 모드 네비바 배경색 */
+	color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.dark-mode .nav-link, .dark-mode .link-dark, .dark-mode .link-light {
+	color: #e0e0e0; /* 다크 모드 링크 색상 */
+}
+
+.dark-mode .nav-link:hover, .dark-mode .link-dark:hover, .dark-mode .link-light:hover {
+	color: #5bc0de; /* 다크 모드에서 링크 호버 색상 */
+}
+
+.btn-dark-mode {
+	background-color: #343a40;
+	color: #fff;
+	border: none;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	transition: background-color 0.3s ease;
+}
+
+.btn-dark-mode:hover {
+	background-color: #23272b;
+	color: #b3e0f2;
+}
+
+.dark-mode-toggle {
+	margin-left: auto;
+}
+
+.nav-link {
+	color: #fff; /* 네브바 글씨 색상을 흰색으로 설정 */
+}
+
+.navbar-nav .nav-link {
+	font-size: 1rem; /* 글씨 크기 키움 */
+	color: white; /* 기본 글씨 색상 흰색 */
+	transition: color 0.3s ease; /* 색상 전환 부드럽게 */
+}
+
+.navbar-nav .nav-link:hover {
+	color: black; /* 호버 시 검정색 */
+}
+
+.navbar-brand {
+	font-weight: bold; /* Make the font bold */
+}
+
+.custom-container {
+	background-color: #b3e0f2; /* Light sky blue color */
+	color: white; /* Text color set to white */
+}
+
+.dark-mode .custom-container {
+	background-color: #1f1f1f; /* 다크 모드 네비바 배경색 */
+	color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.button-group a {
+	margin-right: 10px; /* 버튼 사이의 간격을 조정 */
+}
+
+.button-group a:last-child {
+	margin-right: 0; /* 마지막 버튼은 마진이 없어야 함 */
+}
+
+.carousel-caption {
+	background-color: rgba(50, 40, 30, 0.75); /* 반투명 검은색 배경 */
+	padding: 15px;
+	border-radius: 10px;
+}
+
+.carousel-caption h5, .carousel-caption p {
+	color: white; /* 텍스트를 흰색으로 설정 */
+}
+
+.input-group .form-select {
+	flex: 0 0 auto; /* 선택창의 너비를 줄이기 위해 flex 설정 */
+	width: auto; /* 선택창의 너비를 내용에 맞게 자동으로 조정 */
+}
+
+.input-group .form-control {
+	flex: 1 1 auto; /* 검색어 입력 부분의 너비를 늘리기 위해 flex 설정 */
+}
+
+/* bno와 제목을 검정색으로 설정하고 hover 시에만 밑줄 추가 */
+a.bno-link, a.title-link {
+	color: #000; /* 검정색 글씨 */
+	text-decoration: none; /* 밑줄 제거 */
+}
+
+a.bno-link:hover, a.title-link:hover {
+	text-decoration: underline; /* hover 시 밑줄 추가 */
+}
+
+.dark-mode a.bno-link, .dark-mode a.title-link {
+	color: #e0e0e0; /* 다크 모드에서 링크 색상을 연한 회색으로 설정 */
+}
+
+.dark-mode a.bno-link:hover, .dark-mode a.title-link:hover {
+	color: #5bc0de; /* 다크 모드에서 호버 시 링크 색상 변경 */
+}
+
+.dark-mode .container, .dark-mode .container * {
+	color: #e0e0e0; /* 다크 모드에서 컨테이너 내부 텍스트 색상 */
+}
+
+.content-container {
+	display: flex;
+	align-items: flex-start; /* 아이템들을 시작 지점에 맞춤 */
+}
+
+.content-container .images {
+	margin-right: 20px; /* 이미지와 내용 사이의 간격 */
+}
+
+.content-container .content {
+	flex-grow: 1; /* 내용이 가능한 공간을 차지하도록 설정 */
+}
+
+.list-group-item {
+	margin-bottom: 15px; /* 댓글 목록 간의 간격을 늘림 */
+	border: 1px solid #ddd; /* 댓글 테두리 설정 */
+	border-top: 1px solid #ddd !important; /* 상단 테두리 설정 */
+	border-radius: 5px; /* 테두리 둥글게 설정 */
+	padding: 10px; /* 댓글 내용과 테두리 간격 설정 */
+	background-color: #fff; /* 댓글 배경색을 흰색으로 설정 */
+}
+
+/* 첫 번째 항목 상단 테두리 설정 */
+.list-group-item:first-child {
+	border-top: 1px solid #ddd !important;
+}
+
+</style>
+
+<script>
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+}
+
+function setCombinedDates() {
+    const regDate = document.getElementById('regDate').value;
+    const modDate = document.getElementById('modDate').value;
+    const combinedDate = `${regDate} (${modDate})`;
+    document.getElementById('combinedDate').value = combinedDate;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setCombinedDates();
+});
+</script>
+</head>
+
+<body class="d-flex flex-column">
+
+	<!-- 네비바 start -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container px-5">
+			<a class="navbar-brand" th:href="@{/index}">Today Organized Plan (TOP)</a>
+			<div class="navbar-collapse justify-content-end">
+				<ul class="navbar-nav">
+					<li class="nav-item" sec:authorize="isAnonymous()">
+						<button type="button" class="btn btn-primary me-2" onclick="location.href='/login'" id="login_btn">로그인</button>
+					</li>
+					<li class="nav-item" sec:authorize="isAuthenticated()">
+						<form th:action="@{/logout}" method="post">
+							<button type="submit" class="btn btn-primary me-2" id="logout_btn">로그아웃</button>
+						</form>
+					</li>
+					<li class="nav-item" sec:authorize="isAnonymous()">
+						<button type="button" class="btn btn-secondary me-2" onclick="location.href='/signup'">회원가입</button>
+					</li>
+					<li class="nav-item" sec:authorize="isAuthenticated()"><span th:text="${#authentication.name} + '님 환영합니다'"></span></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="modalContainer"></div>
+	<!-- 네비바 end -->
+
+	<nav class="navbar navbar-expand-lg custom-container">
+    <div class="container px-5">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <!-- 가운데 정렬된 리스트 -->
+            <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index">Home</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index#contentContainer">계획짜기</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="http://localhost/board">게시판</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="mypage">MyPage</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="faq.html">FAQ</a>
+                </li>
+            </ul>
+        </div>
+        <button onclick="toggleDarkMode()" class="btn btn-dark-mode dark-mode-toggle">Dark Mode</button>
+    </div>
+</nav>
+	<!-- 네비바 end -->
+
+	<div class="container px-5" style="margin-bottom: 40px;">
+
+		<div class="d-flex justify-content-between align-items-center mt-4">
+			<h1>게시판 상세 페이지</h1>
+				<div class="button-group">
+					<a th:href="@{/board/modify(bno=${dto.bno})}" class="btn btn-outline-primary">글수정</a> 
+					<a th:href="@{/board/list(page=${pageRequestDTO.page})}" class="btn btn-outline-primary">글목록</a>
+				</div>
+		</div>
+
+		<input type="hidden" id="bno" th:value="${dto.bno}"> 
+		<input type="hidden" id="regDate" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd')}"> 
+		<input type="hidden" id="modDate" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd')}"> 
+		<br>
+		<div class="form-group">
+			<label>Title</label> 
+			<input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
+		</div>
+		<br>
+		<div class="content-container">
+			<div class="images">
+				<label>Images</label>
+				<div th:each="image : ${dto.imageDTOList}">
+					<img th:src="|/display?fileName=${image.imageURL}|" class="img-thumbnail" style="max-width: 200px;">
+				</div>
+			</div>
+			<div class="content">
+				<div class="form-group">
+					<label>Content</label>
+					<textarea class="form-control" name="content" rows="5" readonly="readonly">[[${dto.content}]]</textarea>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>닉네임</label> 
+					<input type="text" class="form-control" name="nickname" th:value="${dto.nickname}" readonly>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>작성일(수정일)</label> 
+					<input type="text" class="form-control" id="combinedDate" readonly>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>조회수</label> 
+					<input type="text" class="form-control" name="visitCount" th:value="${dto.visitCount}" readonly>
+				</div>
+			</div>
+		</div>
+
+		<!-- 댓글 쓰기 -->
+		<div class="mt-4">
+			<h3>댓글 쓰기</h3>
+			<div class="form-group">
+				<textarea class="form-control" id="newReplyContent" rows="3" placeholder="댓글을 입력하세요"></textarea>
+			</div>
+			<br>
+			<div class="form-group">
+				<input type="text" class="form-control" id="newReplyMemId" placeholder="작성자의 MemId">
+			</div>
+			<br>
+			<button type="button" class="btn btn-primary" id="addReplyButton">댓글 작성</button>
+		</div>
+
+		<br>
+
+		<!-- 댓글 목록 -->
+		<div class="mt-4">
+			<h3>댓글 목록</h3>
+			<div id="replyList" class="list-group">
+				<div th:each="reply : ${replies}" class="list-group-item d-flex justify-content-between align-items-center">
+					<div>
+						<h5 th:text="${reply.replyer.nickname}">닉네임</h5>
+						<p th:text="${reply.text}">댓글 내용</p>
+					</div>
+					<button type="button" class="btn btn-danger btn-sm delete-reply ms-auto" th:data-reviewnum="${reply.reviewNum}">삭제</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Footer-->
+	<footer class="bg-dark py-4 mt-auto">
+		<div class="container px-5">
+			<div class="row align-items-center justify-content-between flex-column flex-sm-row">
+				<div class="col-auto">
+					<div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
+				</div>
+				<div class="col-auto">
+					<a class="link-light small" href="#!">Privacy</a> <span class="text-white mx-1">&middot;</span> 
+					<a class="link-light small" href="#!">Terms</a> <span class="text-white mx-1">&middot;</span> 
+					<a class="link-light small" href="#!">Contact</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Bootstrap JavaScript를 로드합니다. -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- jQuery를 로드합니다. -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- 추가적인 JavaScript 코드 -->
+	<script>
+		$(document).ready(function() {
+			// 댓글 추가 버튼 클릭 이벤트
+			$('#addReplyButton').click(function() {
+				var content = $('#newReplyContent').val();
+				var memId = $('#newReplyMemId').val();
+				var bno = $('#bno').val(); // bno 값을 가져옵니다.
+
+				if (content.trim() === '' || memId.trim() === '' || bno.trim() === '') {
+					alert('댓글 내용과 작성자의 MemId를 입력해주세요.');
+					return;
+				}
+
+				// 서버로 댓글 데이터를 전송 (AJAX 요청)
+				$.ajax({
+					url: '/reply/add',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify({
+						text: content,
+						replyer: {
+							memId: memId
+						}, // 입력받은 memId를 사용
+						bno: bno // 가져온 bno를 사용
+					}),
+					success: function(response) {
+						// 댓글 목록 갱신
+						loadReplies();
+						// 입력 필드 초기화
+						$('#newReplyContent').val('');
+						$('#newReplyMemId').val('');
+					},
+					error: function() {
+						alert('댓글 작성 중 오류가 발생했습니다.');
+					}
+				});
+			});
+
+			// 댓글 삭제 버튼 클릭 이벤트
+			$(document).on('click', '.delete-reply', function() {
+				var reviewNum = $(this).data('reviewnum');
+				if (confirm('댓글을 삭제하시겠습니까?')) {
+					$.ajax({
+						url: '/reply/' + reviewNum,
+						type: 'DELETE',
+						success: function(response) {
+							alert('댓글이 삭제되었습니다.');
+							loadReplies();
+						},
+						error: function() {
+							alert('댓글 삭제 중 오류가 발생했습니다.');
+						}
+					});
+				}
+			});
+
+			// 댓글 목록 로드 함수
+			function loadReplies() {
+				var bno = $('#bno').val(); // bno 값을 가져옵니다.
+				$.ajax({
+					url: '/reply/list',
+					type: 'GET',
+					data: {
+						bno: bno // 가져온 bno를 사용
+					},
+					success: function(response) {
+						// 댓글 목록을 표시할 HTML을 생성
+						var replyHtml = '';
+						response.forEach(function(reply) {
+							replyHtml += '<div class="list-group-item d-flex justify-content-between align-items-center">';
+							replyHtml += '<div>';
+							replyHtml += '<h5>' + reply.replyer.nickname + '</h5>';
+							replyHtml += '<p>' + reply.text + '</p>';
+							replyHtml += '</div>';
+							replyHtml += '<button type="button" class="btn btn-danger btn-sm delete-reply ms-auto" data-reviewnum="' + reply.reviewNum + '">삭제</button>';
+							replyHtml += '</div>';
+						});
+						$('#replyList').html(replyHtml);
+					},
+					error: function() {
+						alert('댓글 목록을 로드하는 중 오류가 발생했습니다.');
+					}
+				});
+			}
+
+			// 페이지 로드 시 댓글 목록을 로드
+			loadReplies();
+		});
+	</script>
+</body>
+</html>

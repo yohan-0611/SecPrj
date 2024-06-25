@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Board List</title>
+<link href="/css/styles.css" rel="stylesheet" />
+<style>
+body {
+	transition: background-color 0.3s ease, color 0.3s ease;
+	background-color: #f5f5f5; /* 기본 배경색을 얕은 회색으로 설정 */
+	color: #333; /* 기본 텍스트 색상을 블랙으로 설정 */
+}
+
+.dark-mode {
+	background-color: #121212; /* 다크 모드 배경색 */
+	color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.btn-dark-mode {
+	background-color: #343a40;
+	color: #fff;
+	border: none;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	transition: background-color 0.3s ease;
+}
+
+.btn-dark-mode:hover {
+	background-color: #23272b;
+	color: #b3e0f2;
+}
+
+.dark-mode-toggle {
+	margin-left: auto;
+}
+
+.nav-link {
+	color: #fff; /* 네브바 글씨 색상을 흰색으로 설정 */
+}
+
+.navbar-nav .nav-link {
+	font-size: 1rem; /* 글씨 크기 키움 */
+	color: white; /* 기본 글씨 색상 흰색 */
+	transition: color 0.3s ease; /* 색상 전환 부드럽게 */
+}
+
+.navbar-nav .nav-link:hover {
+	color: black; /* 호버 시 검정색 */
+}
+
+.navbar-brand {
+	font-weight: bold; /* Make the font bold */
+}
+
+.custom-container {
+	background-color: #b3e0f2; /* Light sky blue color */
+	color: white; /* Text color set to white */
+}
+
+.dark-mode .custom-container {
+	background-color: #1f1f1f; /* 다크 모드 네비바 배경색 */
+	color: #e0e0e0; /* 다크 모드 텍스트 색상 */
+}
+
+.button-group a {
+	margin-right: 10px; /* 버튼 사이의 간격을 조정 */
+}
+
+.button-group a:last-child {
+	margin-right: 0; /* 마지막 버튼은 마진이 없어야 함 */
+}
+
+.carousel-caption {
+	background-color: rgba(50, 40, 30, 0.75); /* 반투명 검은색 배경 */
+	padding: 15px;
+	border-radius: 10px;
+}
+
+.carousel-caption h5, .carousel-caption p {
+	color: white; /* 텍스트를 흰색으로 설정 */
+}
+
+.input-group .form-select {
+	flex: 0 0 auto; /* 선택창의 너비를 줄이기 위해 flex 설정 */
+	width: auto; /* 선택창의 너비를 내용에 맞게 자동으로 조정 */
+}
+
+.input-group .form-control {
+	flex: 1 1 auto; /* 검색어 입력 부분의 너비를 늘리기 위해 flex 설정 */
+}
+
+/* bno와 제목을 검정색으로 설정하고 hover 시에만 밑줄 추가 */
+a.bno-link, a.title-link {
+	color: #000; /* 검정색 글씨 */
+	text-decoration: none; /* 밑줄 제거 */
+}
+
+a.bno-link:hover, a.title-link:hover {
+	text-decoration: underline; /* hover 시 밑줄 추가 */
+}
+
+.dark-mode a.bno-link, .dark-mode a.title-link {
+	color: #e0e0e0; /* 다크 모드에서 링크 색상을 연한 회색으로 설정 */
+}
+
+.dark-mode a.bno-link:hover, .dark-mode a.title-link:hover {
+	color: #5bc0de; /* 다크 모드에서 호버 시 링크 색상 변경 */
+}
+
+.dark-mode .container, .dark-mode .container * {
+	color: #e0e0e0; /* 다크 모드에서 컨테이너 내부 텍스트 색상 */
+}
+</style>
+
+<script>
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+}
+</script>
+</head>
+
+<body class="d-flex flex-column">
+
+	<!-- 네비바 start -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container px-5">
+			<a class="navbar-brand" th:href="@{/index}">Today Organized Plan (TOP)</a>
+			<div class="navbar-collapse justify-content-end">
+				<ul class="navbar-nav">
+					<li class="nav-item" sec:authorize="isAnonymous()">
+						<button type="button" class="btn btn-primary me-2" onclick="location.href='/login'" id="login_btn">로그인</button>
+					</li>
+					<li class="nav-item" sec:authorize="isAuthenticated()">
+						<form th:action="@{/logout}" method="post">
+							<button type="submit" class="btn btn-primary me-2" id="logout_btn">로그아웃</button>
+						</form>
+					</li>
+					<li class="nav-item" sec:authorize="isAnonymous()">
+						<button type="button" class="btn btn-secondary me-2" onclick="location.href='/signup'">회원가입</button>
+					</li>
+					<li class="nav-item" sec:authorize="isAuthenticated()"><span th:text="${#authentication.name} + '님 환영합니다'"></span></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="modalContainer"></div>
+	<!-- 네비바 end -->
+
+	<nav class="navbar navbar-expand-lg custom-container">
+    <div class="container px-5">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <!-- 가운데 정렬된 리스트 -->
+            <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index">Home</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="/index#contentContainer">계획짜기</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="http://localhost/board">게시판</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="mypage">MyPage</a>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="faq.html">FAQ</a>
+                </li>
+            </ul>
+        </div>
+        <button onclick="toggleDarkMode()" class="btn btn-dark-mode dark-mode-toggle">Dark Mode</button>
+    </div>
+</nav>
+	<!-- 네비바 end -->
+
+	<!-- 메인 콘텐츠 -->
+	<main class="flex-shrink-0">
+		<!-- 여행일정 공유방 -->
+		<section class="py-2" id="features">
+			<div class="container px-5 my-5">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h2 class="fw-bolder">여행일정 공유방</h2>
+					<div>
+						<a th:href="@{/board}" class="btn btn-outline-primary me-2">뒤로가기</a>
+						<a th:href="@{/register}" class="btn btn-outline-primary">등록하기</a>
+					</div>
+				</div>
+
+				<form action="/board/list" method="get" id="searchForm" class="mb-4">
+					<input type="hidden" name="page" value="1">
+					<div class="input-group">
+						<!-- 키워드 검색 시작 -->
+						<select class="form-select" name="type">
+							<option selected disabled>------</option>
+							<option value="t" th:selected="${TPageRequestDTO.type == 't'}">제목</option>
+							<option value="c" th:selected="${TPageRequestDTO.type == 'c'}">내용</option>
+							<option value="tc" th:selected="${TPageRequestDTO.type == 'tc'}">제목+내용</option>
+						</select> <input class="form-control" name="keyword" th:value="${TPageRequestDTO.keyword}" placeholder="검색어를 입력하세요">
+						<button class="btn btn-outline-secondary btn-search">검색</button>
+					</div>
+				</form>
+
+				<table class="table table-hover">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Picture</th>
+							<th scope="col">Title</th>
+							<th scope="col">Visit Count</th>
+							<th scope="col">Nickname</th>
+							<th scope="col">Regdate</th>
+							</tr>
+					</thead>
+					<tbody>
+						<tr th:each="dto : ${result.dtoList}">
+							<th scope="row"><a th:href="@{/board/read(bno=${dto.bno}, page=${result.page})}" class="bno-link">[[${dto.bno}]]</a></th>
+							<td><a th:if="${dto.imageDTOList != null && !dto.imageDTOList.isEmpty()}" th:href="@{/board/read(bno=${dto.bno}, page=${result.page})}">
+									<img th:src="|/display?fileName=${dto.imageDTOList[0].thumImageURL}|" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+							</a></td>
+							<td><a th:href="@{/board/read(bno=${dto.bno}, page=${result.page})}" class="title-link">[[${dto.title}]]</a></td>
+							<td>[[${dto.visitCount}]]</td>
+							<td>[[${dto.nickname}]]</td>
+							<td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<nav>
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:if="${result.prev}"><a class="page-link" th:href="@{/board/list(page=${result.start - 1})}" tabindex="-1">Previous</a></li>
+						<li th:class="'page-item ' + ${result.page == page ? 'active' : ''}" th:each="page : ${result.pageList}"><a class="page-link" th:href="@{/board/list(page=${page})}">[[${page}]]</a></li>
+						<li class="page-item" th:if="${result.next}"><a class="page-link" th:href="@{/board/list(page=${result.end + 1})}">Next</a></li>
+					</ul>
+				</nav>
+			</div>
+		</section>
+	</main>
+
+	<!-- 푸터 -->
+	<footer class="bg-dark py-4 mt-auto">
+		<div class="container px=5">
+			<div class="row align-items-center justify-content-between flex-column flex-sm-row">
+				<div class="col-auto">
+					<div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
+				</div>
+				<div class="col-auto">
+					<a class="link-light small" href="#!">Privacy</a> <span class="text-white mx-1">&middot;</span> <a class="link-light small" href="#!">Terms</a> <span class="text-white mx-1">&middot;</span> <a class="link-light small" href="#!">Contact</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Bootstrap core JS-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="js/scripts.js"></script>
+
+	<!-- 검색기능 -->
+	<script th:inline="javascript">
+    // 검색 폼 제출 처리
+    $(document).ready(function() {
+        $('.btn-search').click(function() {
+            $('#searchForm').submit();
+        });
+    });
+</script>
+
+	<!-- 조회 수 증가를 위한 스크립트 -->
+	<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const postLinks = document.querySelectorAll('.view-post');
+        postLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                const bno = event.currentTarget.getAttribute('data-bno');
+                fetch(`/board/increment-visit?bno=${bno}`, { method: 'POST' })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Visit count incremented:', data);
+                        // 페이지 이동
+                        window.location.href = event.currentTarget.href;
+                    })
+                    .catch(error => console.error('Error incrementing visit count:', error));
+            });
+        });
+    });
+</script>
+</body>
+</html>
